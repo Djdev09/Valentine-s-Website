@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pick a Surprise</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .falling-photo {
+            position: absolute;
+            top: -100px;
+            width: 80px; 
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 1;
+            pointer-events: none;
+            animation: fallEffect linear forwards;
+        }
+
+        @keyframes fallEffect {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        h1 {
+            color: #c62828;
+            margin-bottom: 40px;
+            z-index: 10;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: slideDown 1s ease-out;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            z-index: 10;
+            perspective: 1000px;
+        }
+
+        .card {
+            width: 280px;
+            height: 360px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 4px solid #FF4081;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.3s; }
+        .card:nth-child(3) { animation-delay: 0.5s; }
+        .card:nth-child(4) { animation-delay: 0.7s; }
+
+        @keyframes slideUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            0% { transform: translateY(-100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .card:hover {
+            transform: translateY(-15px) scale(1.05) !important;
+            box-shadow: 0 20px 40px rgba(255, 64, 129, 0.4);
+            background-color: #fff5f7;
+        }
+
+        .card-img {
+            width: 85%;
+            height: 75%;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid #ee9ca7;
+            margin-bottom: 8px;
+        }
+
+        .card-label {
+            color: #FF4081;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* REWARD BUTTON STYLE */
+        #reward-btn {
+            display: none;
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: #a7f3e9;
+            color: #d81b60;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 0 20px rgba(122, 122, 122, 0.6);
+            z-index: 100;
+            animation: pulse 1.5s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(122, 122, 122, 0.6); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (min-width: 600px) {
+            .card-container { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        footer { position: fixed; bottom: 15px; font-size: 14px; color: rgba(0,0,0,0.5); z-index: 10; }
+    </style>
+</head>
+<body>
+
+    <h1>Pick a Card, Lovey! ✨</h1>
+
+    <div class="card-container">
+        <div class="card" onclick="openCard('memories.html', 'card1')">
+            <img src="../img/D1.png" alt="Memories" class="card-img" onerror="this.src='https://via.placeholder.com/200x250?text=Photo+1'">
+            <span class="card-label">Click Me</span>
+        </div>
+        <div class="card" onclick="openCard('flower.html', 'card2')">
+            <img src="../img/D2.jpg" alt="Surprise 2" class="card-img" onerror="this.src='https://via.placeholder.com/200x250?text=Photo+2'">
+            <span class="card-label">Click Me</span>
+        </div>
+        <div class="card" onclick="openCard('with_you.html', 'card3')">
+            <img src="../img/D3.jpg" alt="Surprise 3" class="card-img" onerror="this.src='https://via.placeholder.com/200x250?text=Photo+3'">
+            <span class="card-label">Click Me</span>
+        </div>
+        <div class="card" onclick="openCard('letter.html', 'card4')">
+            <img src="../img/D4.jpg" alt="Surprise 4" class="card-img" onerror="this.src='https://via.placeholder.com/200x250?text=Photo+4'">
+            <span class="card-label">Click Me</span>
+        </div>
+    </div>
+
+    <a href="../index/tree.html" id="reward-btn">you unlocked the special reward❤️</a>
+
+    <footer>Made with ❤️ by me</footer>
+
+    <script>
+        const MY_IMAGE_URL = "../img/dj.jpg"; 
+
+        // TRACKING LOGIC
+        function openCard(url, cardId) {
+            let progress = JSON.parse(localStorage.getItem('cardsClicked') || "[]");
+            if (!progress.includes(cardId)) {
+                progress.push(cardId);
+                localStorage.setItem('cardsClicked', JSON.stringify(progress));
+            }
+            window.location.href = url;
+        }
+
+        // CHECK ON LOAD
+        window.onload = function() {
+            let progress = JSON.parse(localStorage.getItem('cardsClicked') || "[]");
+            if (progress.length >= 4) {
+                document.getElementById('reward-btn').style.display = 'block';
+            }
+        };
+
+        function createFallingPhoto() {
+            const photo = document.createElement('img');
+            photo.src = MY_IMAGE_URL;
+            photo.classList.add('falling-photo');
+            photo.style.left = Math.random() * 100 + "vw";
+            photo.style.animationDuration = (Math.random() * 2 + 3) + "s";
+            
+            photo.onerror = function() {
+                const heart = document.createElement('div');
+                heart.innerHTML = "❤️";
+                heart.style.position = "absolute";
+                heart.style.left = photo.style.left;
+                heart.style.top = "-50px";
+                heart.style.fontSize = "24px";
+                heart.style.animation = `fallEffect ${photo.style.animationDuration} linear forwards`;
+                document.body.appendChild(heart);
+                photo.remove();
+                setTimeout(() => heart.remove(), 5000);
+            };
+
+            document.body.appendChild(photo);
+            setTimeout(() => { if(photo) photo.remove(); }, 5000);
+        }
+
+        setInterval(createFallingPhoto, 600);
+    </script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowers for You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+            font-family: 'Comic Sans MS', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Falling Flower Animation --- */
+        .falling-photo {
+            position: absolute;
+            top: -100px;
+            width: 40px; 
+            height: 40px;
+            object-fit: contain;
+            z-index: 1;
+            pointer-events: none;
+            animation: fallEffect linear forwards;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        @keyframes fallEffect {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- Entrance Animations --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .flower-container {
+            text-align: center;
+            z-index: 10;
+            animation: fadeInUp 1.2s ease-out;
+            position: relative;
+            width: 95%;
+            max-width: 900px; /* Increased for bigsize */
+        }
+
+        .main-title {
+            font-family: 'Dancing Script', cursive;
+            color: #c62828;
+            font-size: clamp(3.5rem, 10vw, 5.5rem); /* Bigger title */
+            margin-bottom: 0px;
+            text-shadow: 2px 2px 8px rgba(255,255,255,0.6);
+        }
+
+        .bouquet-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .bouquet {
+            width: 100%;
+            max-width: 550px; /* BIGSIZE setting */
+            height: auto;
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.2));
+            animation: float 4s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        /* --- Accurate Curved Arrow & Text --- */
+        .label-container {
+            position: absolute;
+            left: 5%;
+            top: 40%;
+            width: 200px;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .flower-text {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: #fff;
+            line-height: 1;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            transform: rotate(-5deg);
+        }
+
+        /* --- Stickers --- */
+        .sticker {
+            position: absolute;
+            font-size: clamp(30px, 6vw, 60px);
+            z-index: 15;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
+        }
+
+        /* --- Back Button --- */
+        .back-btn {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            background-color: #FF4081;
+            width: 65px; height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background-color: #c62828;
+            transform: scale(1.2) rotate(-15deg);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 850px) {
+            .bouquet-wrapper {
+                flex-direction: column;
+            }
+            .label-container {
+                position: relative;
+                left: auto;
+                top: auto;
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            .svg-arrow {
+                transform: rotate(90deg) scale(0.8);
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            .bouquet {
+                max-width: 85vw;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sticker" style="top: 8%; left: 10%;">✨</div>
+    <div class="sticker" style="top: 12%; right: 12%;">🌸</div>
+    <div class="sticker" style="bottom: 15%; left: 10%;">💝</div>
+
+    <div class="flower-container">
+        <h1 class="main-title">Flowers for you!</h1>
+        
+        <div class="bouquet-wrapper">
+            <div class="label-container">
+                <div class="flower-text">lilly, your favorite flower</div>
+            </div>
+
+            <img src="../img/flower.png" alt="Lily Bouquet" class="bouquet" onerror="this.src='https://raw.githubusercontent.com/AI-Generated-Images/Lilies/main/lily_bouquet.png'">
+        </div>
+    </div>
+
+    <a href="../index/proceed.html" class="back-btn">↩</a>
+
+    <script>
+        // Make sure this matches your image name in the img folder
+        const FLOWER_ICON = "img/flower.png"; 
+
+        function createFallingFlower() {
+            const flower = document.createElement('div');
+            flower.innerHTML = "🌸"; // Can be changed to small lily image if you have one
+            flower.classList.add('falling-photo');
+            flower.style.left = Math.random() * 100 + "vw";
+            flower.style.fontSize = (Math.random() * 20 + 20) + "px";
+            flower.style.animationDuration = (Math.random() * 3 + 4) + "s";
+            
+            document.body.appendChild(flower);
+            setTimeout(() => { flower.remove(); }, 6000);
+        }
+        
+        // Start falling animation
+        setInterval(createFallingFlower, 600);
+    </script>
+</body>
+</html>

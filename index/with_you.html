@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>With You - Sweet Memories</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+            --panel-bg: #fffaf0; 
+            --accent-red: #d32f2f;
+            --border-pink: #ee9ca7;
+            --sky-blue: #c3e9f7;
+            --btn-pink: #FF4081;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-gradient);
+            font-family: 'Comic Sans MS', cursive;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes zoomOutEntrance {
+            0% { transform: scale(1.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .main-canvas {
+            display: flex;
+            gap: 30px;
+            z-index: 10;
+            animation: zoomOutEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            max-width: 1100px;
+            width: 95%;
+        }
+
+        .left-panel {
+            background-color: var(--panel-bg);
+            flex: 0.8;
+            border-radius: 40px;
+            border: 6px dashed var(--border-pink);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 15px 15px 0px rgba(238, 156, 167, 0.3);
+            position: relative;
+        }
+
+        .flower-garden {
+            width: 100%;
+            height: 300px;
+            background: var(--sky-blue);
+            border-radius: 30px;
+            border: 4px solid white;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+            animation: floatCloud 10s infinite linear;
+        }
+
+        @keyframes floatCloud {
+            from { transform: translateX(-100px); }
+            to { transform: translateX(300px); }
+        }
+
+        .flower {
+            position: relative;
+            z-index: 2;
+            margin: 0 -5px;
+            transition: transform 0.3s ease;
+        }
+        .flower:hover { transform: translateY(-10px) rotate(5deg); }
+        .stem { width: 6px; background: #5d4037; border-radius: 3px; }
+        
+        .puffy-head {
+            width: 50px; height: 50px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            border: 4px solid white;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .puffy-head::before {
+            content: '✿';
+            color: white;
+            font-size: 40px;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .vase {
+            background-color: var(--accent-red);
+            width: 200px;
+            height: 150px;
+            margin-top: -40px;
+            border-radius: 50% 50% 25% 25%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 10px solid #a12323;
+            z-index: 5;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .vase h1 {
+            font-family: 'Dancing Script', cursive;
+            color: white;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+
+        .right-panel {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .video-card {
+            background: var(--panel-bg);
+            padding: 15px;
+            border-radius: 40px;
+            border: 6px dashed var(--border-pink);
+            box-shadow: 15px 15px 0px rgba(238, 156, 167, 0.3);
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 25px;
+            overflow: hidden;
+            border: 5px solid white;
+        }
+
+        #memory-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .controls-card {
+            background: var(--accent-red);
+            padding: 25px;
+            border-radius: 40px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-group { 
+            font-size: 30px; 
+            display: flex; 
+            justify-content: center; 
+            gap: 40px; 
+            align-items: center; 
+        }
+
+        /* Make sure the play/pause span is clickable */
+        #play-btn {
+            cursor: pointer;
+            padding: 10px;
+            user-select: none;
+            transition: transform 0.2s;
+        }
+        #play-btn:active { transform: scale(0.9); }
+        
+        .back-btn {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            background-color: var(--btn-pink);
+            width: 65px; 
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            animation: pulseBtn 2s infinite;
+        }
+
+        .falling-photo {
+            position: absolute;
+            top: -100px;
+            width: 60px; height: 60px;
+            object-fit: cover;
+            border-radius: 50%; 
+            z-index: 1;
+            animation: fallEffect linear forwards;
+            border: 3px solid white;
+            pointer-events: none; /* Prevents photos from blocking clicks */
+        }
+
+        @keyframes fallEffect {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes heartbeat { 0% {transform:scale(1);} 50% {transform:scale(1.2);} 100% {transform:scale(1);} }
+
+        .sticker { position: absolute; font-size: 50px; z-index: 15; pointer-events: none; }
+
+        @media (max-width: 850px) {
+            .main-canvas { flex-direction: column; align-items: center; }
+            body { overflow-y: auto; padding-top: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music">
+        <source src="../video/figvres - Yakap (Official Lyric Video).mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="sticker" style="top: 5%; left: 10%;">⭐</div>
+    <div class="sticker" style="bottom: 15%; left: 5%;">🍭</div>
+
+    <div class="main-canvas">
+        <div class="left-panel">
+            <h2 style="font-family: 'Caveat', cursive; color: var(--accent-red); font-size: 2.5rem; margin-bottom: 10px;">forever with you ><</h2>
+            
+            <div class="flower-garden">
+                <div class="cloud" style="top: 20px; width: 60px; height: 20px; animation-duration: 15s;"></div>
+                <div class="cloud" style="top: 60px; width: 80px; height: 25px; animation-duration: 20s; left: 50px;"></div>
+                
+                <div class="flower"><div class="puffy-head" style="background: #ff8a80;"></div><div class="stem" style="height: 80px;"></div></div>
+                <div class="flower"><div class="puffy-head"></div><div class="stem" style="height: 120px;"></div></div>
+                <div class="flower"><div class="puffy-head" style="background: #ff8a80;"></div><div class="stem" style="height: 90px;"></div></div>
+            </div>
+
+            <div class="vase">
+                <h1>with you</h1>
+            </div>
+            <div id="heart-emoji" style="font-size: 40px; margin-top: 15px;">💖</div>
+        </div>
+
+        <div class="right-panel">
+            <div class="video-card">
+                <div class="video-container">
+                    <video id="memory-video" controls>
+                        <source src="../video/eto.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+            <div class="controls-card">
+                <div style="font-family: 'Caveat', cursive; font-size: 1.5rem; margin-bottom: 10px;">now playing our song...</div>
+                <div class="btn-group">
+                    <span>⏮</span>
+                    <span id="play-btn">▶</span>
+                    <span>⏭</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="../index/proceed.html" class="back-btn" title="Go Back">↩</a>
+
+    <script>
+        const IMAGE_URL = "../img/dj.jpg"; 
+        const music = document.getElementById('bg-music');
+        const video = document.getElementById('memory-video');
+        const playBtn = document.getElementById('play-btn');
+        const heart = document.getElementById('heart-emoji');
+
+        // Toggle Music Play/Pause
+        function toggleMusic() {
+            if (music.paused) {
+                // If music is paused, play it and pause video
+                music.play().catch(e => console.log("Audio play blocked", e));
+                video.pause();
+                playBtn.innerText = '⏸';
+                heart.style.animation = "heartbeat 1.5s infinite";
+            } else {
+                // If music is playing, pause it
+                music.pause();
+                playBtn.innerText = '▶';
+                heart.style.animation = "none";
+            }
+        }
+
+        playBtn.addEventListener('click', toggleMusic);
+
+        // If the video starts playing, pause the music
+        video.addEventListener('play', () => {
+            music.pause();
+            playBtn.innerText = '▶';
+            heart.style.animation = "none";
+        });
+
+        // Falling photos logic
+        function createFallingPhoto() {
+            const photo = document.createElement('img');
+            photo.src = IMAGE_URL;
+            photo.classList.add('falling-photo');
+            photo.style.left = Math.random() * 95 + "vw";
+            photo.style.animationDuration = (Math.random() * 2 + 3) + "s";
+            photo.onerror = function() { this.src = "https://cdn-icons-png.flaticon.com/512/833/833472.png"; };
+
+            document.body.appendChild(photo);
+            setTimeout(() => photo.remove(), 5000);
+        }
+        setInterval(createFallingPhoto, 1200);
+
+    </script>
+</body>
+</html>

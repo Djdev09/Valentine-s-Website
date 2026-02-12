@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Tree</title>
+    <style>
+        :root {
+            --bg-pink: #ffe4e8;
+            --dark-pink: #ee9ca7;
+            --accent-red: #b71c1c;
+            --card-white: #fffaf0;
+        }
+
+        body {
+            margin: 0; padding: 0; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, var(--bg-pink) 0%, var(--dark-pink) 100%);
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .card-container {
+            position: relative;
+            width: 95%; max-width: 1100px; height: 85vh;
+            background: var(--card-white);
+            border-radius: 30px; border: 8px double var(--dark-pink);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        #heart-trigger {
+            font-size: 80px; cursor: pointer; animation: beat 1.2s infinite;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 100; transition: opacity 0.5s;
+        }
+
+        @keyframes beat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        #music-control {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 200;
+            width: 65px; 
+            height: 65px;
+            background: var(--accent-red);
+            border: none;
+            clip-path: path('M32.5 58.5L28.7 55.1C11.4 39.4 0 29.7 0 17.6C0 7.7 7.7 0 17.6 0C23.1 0 28.5 2.6 32.5 6.7C36.5 2.6 41.9 0 47.4 0C57.3 0 65 7.7 65 17.6C65 29.7 53.6 39.4 36.3 55.2L32.5 58.5Z');
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        #music-control.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        #music-control:hover {
+            background: #ff1744;
+            filter: drop-shadow(0 0 10px rgba(255, 23, 68, 0.8));
+            transform: translate(-50%, -50%) scale(1.2);
+            animation: fastBeat 0.6s infinite;
+        }
+
+        @keyframes fastBeat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1.2); }
+            50% { transform: translate(-50%, -50%) scale(1.3); }
+        }
+
+        .content-layer {
+            display: none; width: 100%; height: 100%;
+            position: relative; opacity: 0; transition: opacity 1.5s ease;
+        }
+
+        canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; z-index: 10; }
+        
+        .back-btn {
+            position: fixed; right: 20px; bottom: 20px;
+            background-color: #FF4081; width: 45px; height: 45px;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: white; font-size: 20px;
+            text-decoration: none; z-index: 1000;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="card-container" id="mainCard">
+        <div id="heart-trigger">❤️</div>
+        <div class="content-layer" id="contentWrapper">
+            <button id="music-control">PLAY</button>
+            <canvas id="treeCanvas"></canvas>
+        </div>
+    </div>
+
+    <audio id="bgMusic">
+        <source src="../video/ihh.mp3" type="audio/mpeg">
+    </audio>
+    
+    <a href="../index/proceed.html" class="back-btn">↩</a>
+
+    <script>
+    const canvas = document.getElementById('treeCanvas');
+    const ctx = canvas.getContext('2d');
+    const heartBtn = document.getElementById('heart-trigger');
+    const wrapper = document.getElementById('contentWrapper');
+    const musicBtn = document.getElementById('music-control');
+    const music = document.getElementById('bgMusic');
+
+    let branches = []; 
+    let staticHearts = []; 
+    let fallingHearts = [];
+    const heartColors = ['#ff1744', '#f06292', '#d81b60', '#ff80ab', '#c2185b'];
+
+    heartBtn.onclick = () => {
+        heartBtn.style.opacity = '0';
+        setTimeout(() => {
+            heartBtn.classList.add('hidden');
+            wrapper.style.display = 'block';
+            setTimeout(() => {
+                wrapper.style.opacity = '1';
+                initTree();
+                triggerFallingHearts(8);
+                setInterval(() => triggerFallingHearts(8), 3000);
+                setTimeout(() => {
+                    musicBtn.classList.add('show');
+                }, 5000);
+            }, 100);
+        }, 500);
+    };
+
+    musicBtn.onclick = () => {
+        if (music.paused) {
+            music.play();
+            musicBtn.innerHTML = "PAUSE";
+            musicBtn.style.fontSize = "9px";
+        } else {
+            music.pause();
+            musicBtn.innerHTML = "PLAY";
+            musicBtn.style.fontSize = "11px";
+        }
+    };
+
+    // Ito ang nagpapatigil at nagre-reset ng button kapag tapos na ang kanta
+    music.onended = () => {
+        musicBtn.innerHTML = "PLAY";
+        musicBtn.style.fontSize = "11px";
+        music.currentTime = 0; // Binabalik sa simula ang kanta
+    };
+
+    function initTree() {
+        canvas.width = canvas.offsetWidth * 2;
+        canvas.height = canvas.offsetHeight * 2;
+        ctx.scale(2, 2);
+        const startX = canvas.offsetWidth / 2;
+        const startY = canvas.offsetHeight * 0.9;
+        generateTree(startX, startY, -90, 10, 12);
+        requestAnimationFrame(animate);
+    }
+
+    function generateTree(x1, y1, angle, depth, branchWidth) {
+        const length = depth * 12;
+        const x2 = x1 + Math.cos(angle * Math.PI / 180) * length;
+        const y2 = y1 + Math.sin(angle * Math.PI / 180) * length;
+        branches.push({ x1, y1, x2, y2, width: branchWidth });
+
+        let leafCount = depth < 4 ? 6 : 2; 
+        for(let i = 0; i < leafCount; i++) {
+            const randomRatio = Math.random();
+            const leafX = x1 + (x2 - x1) * randomRatio + (Math.random() * 10 - 5);
+            const leafY = y1 + (y2 - y1) * randomRatio + (Math.random() * 10 - 5);
+            staticHearts.push({
+                x: leafX, y: leafY,
+                size: 3 + Math.random() * 5,
+                color: heartColors[Math.floor(Math.random() * heartColors.length)]
+            });
+        }
+        if (depth > 0) {
+            generateTree(x2, y2, angle - (15 + Math.random() * 20), depth - 1, branchWidth * 0.7);
+            generateTree(x2, y2, angle + (15 + Math.random() * 20), depth - 1, branchWidth * 0.7);
+        }
+    }
+
+    function drawPathHeart(c, x, y, size, color) {
+        c.save();
+        c.translate(x, y);
+        c.beginPath();
+        c.fillStyle = color;
+        c.moveTo(0, 0);
+        c.bezierCurveTo(-size, -size, -size * 1.5, size / 2, 0, size * 1.3);
+        c.bezierCurveTo(size * 1.5, size / 2, size, -size, 0, 0);
+        c.fill();
+        c.restore();
+    }
+
+    function triggerFallingHearts(count) {
+        if (staticHearts.length < count) return;
+        for (let i = 0; i < count; i++) {
+            const index = Math.floor(Math.random() * staticHearts.length);
+            const heart = staticHearts[index];
+            fallingHearts.push({
+                ...heart,
+                speed: 1.0 + Math.random() * 1.5,
+                wind: Math.random() * 0.6 - 0.3,
+                groundY: (canvas.offsetHeight * 0.92) + (Math.random() * 15)
+            });
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.lineCap = 'round'; ctx.strokeStyle = '#5d4037'; ctx.globalAlpha = 0.8; 
+        branches.forEach(b => {
+            ctx.lineWidth = b.width;
+            ctx.beginPath(); ctx.moveTo(b.x1, b.y1); ctx.lineTo(b.x2, b.y2); ctx.stroke();
+        });
+        ctx.globalAlpha = 1.0;
+        staticHearts.forEach(h => drawPathHeart(ctx, h.x, h.y, h.size, h.color));
+        fallingHearts.forEach((h) => {
+            drawPathHeart(ctx, h.x, h.y, h.size, h.color);
+            if (h.y < h.groundY) { h.y += h.speed; h.x += h.wind; }
+        });
+        requestAnimationFrame(animate);
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be Mine?</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Falling Custom Image Animation --- */
+        .falling-photo {
+            position: absolute;
+            top: -100px;
+            width: 80px; 
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 1;
+            pointer-events: none;
+            animation: fallEffect linear forwards;
+        }
+
+        @keyframes fallEffect {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- Zoomed In Container --- */
+        .container {
+            text-align: center;
+            padding: 60px; 
+            border-radius: 40px;
+            max-width: 90%;
+            width: 550px; 
+            position: relative;
+            z-index: 10;
+            transform: scale(1.1); 
+        }
+
+        /* Message display above the image */
+        #noMessage {
+            color: #c62828;
+            font-size: 26px;
+            font-weight: bold;
+            min-height: 40px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .img-container {
+            height: 300px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+        }
+
+        h1 { 
+            color: #c62828; 
+            font-size: 36px; 
+            margin-bottom: 40px; 
+            line-height: 1.2;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 18px 36px; 
+            font-size: 22px; 
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: bold;
+            font-family: inherit;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+        }
+
+        #yesBtn { background-color: #FF4081; color: white; }
+        #noBtn { background-color: #e57373; color: white; }
+        
+        /* Proceed Button Style */
+        #proceedBtn { 
+            background-color: #4CAF50; 
+            color: white; 
+            display: none; /* Hidden by default */
+        }
+
+        footer {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            font-size: 14px;
+            color: rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="noMessage"></div>
+
+        <div class="img-container">
+            <img id="mainImg" src="./img/hehe.webp" alt="Asking bear">
+        </div>
+        
+        <h1 id="question">lovey, Will you be my Valentine?</h1>
+        
+        <div class="btn-container">
+            <button id="yesBtn" onclick="acceptValentine()">OF COURSE</button>
+            <button id="noBtn" onclick="rejectValentine()">No</button>
+            <button id="proceedBtn" onclick="proceedToNext()">Proceed po baby</button>
+        </div>
+    </div>
+
+    <footer>Made with ❤️ by me</footer>
+
+    <script>
+        let yesButtonSize = 22; 
+        let yesButtonPadding = 18;
+        let sadImageIndex = 0;
+
+        const MY_IMAGE_URL = "img/dj.jpg"; 
+
+        const sadImages = [
+            "img/c1.gif", "img/c6.gif", "img/c3.gif", "img/c4.gif",
+            "img/c5.gif", "img/c6.gif", "img/c7.gif", "img/c8.gif",
+            "img/c9.gif", "img/c10.gif", "img/c1.gif", "img/c3.gif"
+        ];
+
+        const noTexts = [
+            "Are you sure?", 
+            "NOOOOOOOOOOOO", "FINAL NA?",
+            "AWITT SAYO MAN;(", "Plsss? :(("
+        ];
+
+        function createFallingPhoto() {
+            const photo = document.createElement('img');
+            photo.src = MY_IMAGE_URL === "PASTE_YOUR_IMAGE_URL_HERE" ? "img/dj.jpg" : MY_IMAGE_URL;
+            photo.classList.add('falling-photo');
+            photo.style.left = Math.random() * 100 + "vw";
+            photo.style.animationDuration = (Math.random() * 2 + 3) + "s";
+            document.body.appendChild(photo);
+            setTimeout(() => { photo.remove(); }, 5000);
+        }
+
+        setInterval(createFallingPhoto, 500);
+
+        function rejectValentine() {
+            const yesBtn = document.getElementById("yesBtn");
+            const noBtn = document.getElementById("noBtn");
+            const mainImg = document.getElementById("mainImg");
+            const noMsg = document.getElementById("noMessage");
+
+            yesButtonSize += 12; // Adjusted growth value for "dahan-dahan" feel
+            yesButtonPadding += 5;
+            yesBtn.style.fontSize = yesButtonSize + "px";
+            yesBtn.style.padding = `${yesButtonPadding}px ${yesButtonPadding * 2}px`;
+
+            // Change image sequence
+            mainImg.src = sadImages[sadImageIndex];
+            sadImageIndex = (sadImageIndex + 1) % sadImages.length;
+
+            // Random text appears ABOVE the image
+            const randomTextIndex = Math.floor(Math.random() * noTexts.length);
+            noMsg.innerText = noTexts[randomTextIndex];
+            
+            // Red button stays as "No"
+            noBtn.innerText = "No"; 
+        }
+
+        function acceptValentine() {
+            document.getElementById("noMessage").style.display = "none";
+            document.getElementById("question").innerText = "Yay! You're my Valentine! 💖🎉";
+            document.getElementById("mainImg").src = "img/happy.gif";
+            document.getElementById("yesBtn").style.display = "none";
+            document.getElementById("noBtn").style.display = "none";
+            
+            // Show the Proceed button
+            document.getElementById("proceedBtn").style.display = "block";
+        }
+
+        function proceedToNext() {
+            window.location.href = "index/proceed.html";
+        }
+    </script>
+</body>
+</html>
